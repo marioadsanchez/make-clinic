@@ -9,15 +9,11 @@ function formatTime(dt: string) {
   return new Date(dt).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
 }
 
-function formatDate(d: string) {
-  return new Date(d).toLocaleDateString("es-MX", { day: "2-digit", month: "short" });
-}
-
 export default async function DashboardPage() {
   const supabase = createAdminClient();
   const today = new Date();
-  const startOfDay = new Date(today.setHours(0, 0, 0, 0)).toISOString();
-  const endOfDay = new Date(today.setHours(23, 59, 59, 999)).toISOString();
+  const startOfDay = new Date(today); startOfDay.setHours(0, 0, 0, 0);
+  const endOfDay = new Date(today); endOfDay.setHours(23, 59, 59, 999);
 
   const [
     { count: totalPatients },
@@ -25,16 +21,16 @@ export default async function DashboardPage() {
     { count: pendingProposals },
     { count: pendingControls },
   ] = await Promise.all([
-    supabase.from("patients").select("*", { count: "exact", head: true }).eq("clinic_id", DEMO_CLINIC_ID).eq("active", true),
+    supabase.from("patients").select("*", { count: "exact", head: true }).eq("clinic_id", DEMO_CLINIC_ID),
     supabase.from("appointments")
-      .select("id, title, starts_at, ends_at, status, patients(full_name, phone)")
+      .select("id, title, start_at, end_at, status, patients(id, name, phone)")
       .eq("clinic_id", DEMO_CLINIC_ID)
-      .gte("starts_at", startOfDay)
-      .lte("starts_at", endOfDay)
+      .gte("start_at", startOfDay.toISOString())
+      .lte("start_at", endOfDay.toISOString())
       .not("status", "in", '("cancelled","no_show")')
-      .order("starts_at"),
+      .order("start_at"),
     supabase.from("proposals").select("*", { count: "exact", head: true }).eq("clinic_id", DEMO_CLINIC_ID).in("status", ["draft", "sent", "viewed"]),
-    supabase.from("controls").select("*", { count: "exact", head: true }).eq("clinic_id", DEMO_CLINIC_ID).eq("status", "pending"),
+    supabase.from("controls").select("*", { count: "exact", head: true }).eq("clinic_id", DEMO_CLINIC_ID).is("completed_at", null),
   ]);
 
   const cards = [
@@ -55,14 +51,15 @@ export default async function DashboardPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-500 capitalize">
           {new Date().toLocaleDateString("es-MX", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
         </p>
       </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {cards.map((card) => (
-          <Link key={card.label} href={card.href} className="rounded-xl border border-gray-200 bg-white p-5 hover:shadow-sm transition-shadow">
+          <Link key={card.label} href={card.href}
+            className="rounded-xl border border-gray-200 bg-white p-5 hover:shadow-sm transition-shadow">
             <div className={`inline-flex h-10 w-10 items-center justify-center rounded-lg ${colorMap[card.color]}`}>
               <card.icon className="h-5 w-5" />
             </div>
@@ -73,13 +70,10 @@ export default async function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {/* Consultas de hoy */}
         <div className="rounded-xl border border-gray-200 bg-white">
           <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
             <h2 className="font-semibold text-gray-900">Consultas de Hoy</h2>
-            <Link href="/agenda/nueva" className="text-sm font-medium text-blue-600 hover:text-blue-700">
-              + Nueva
-            </Link>
+            <Link href="/agenda/nueva" className="text-sm font-medium text-blue-600 hover:text-blue-700">+ Nueva</Link>
           </div>
           <div className="divide-y divide-gray-100">
             {!todayAppointments?.length ? (
@@ -88,12 +82,12 @@ export default async function DashboardPage() {
               todayAppointments.map((apt) => (
                 <div key={apt.id} className="flex items-center gap-4 px-6 py-3">
                   <div className="text-center">
-                    <p className="text-sm font-semibold text-gray-900">{formatTime(apt.starts_at)}</p>
-                    <p className="text-xs text-gray-500">{formatTime(apt.ends_at)}</p>
+                    <p className="text-sm font-semibold text-gray-900">{formatTime(apt.start_at)}</p>
+                    <p className="text-xs text-gray-500">{formatTime(apt.end_at)}</p>
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium text-gray-900">
-                      {(apt.patients as { full_name: string } | null)?.full_name ?? "—"}
+                      {(apt.patients as { name: string } | null)?.name ?? "—"}
                     </p>
                     <p className="truncate text-xs text-gray-500">{apt.title}</p>
                   </div>
@@ -106,7 +100,6 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {/* Accesos rápidos */}
         <div className="rounded-xl border border-gray-200 bg-white p-6">
           <h2 className="mb-4 font-semibold text-gray-900">Accesos Rápidos</h2>
           <div className="space-y-2">

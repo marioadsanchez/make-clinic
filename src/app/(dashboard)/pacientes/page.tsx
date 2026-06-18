@@ -8,7 +8,7 @@ import type { Patient } from "@/lib/types";
 export const runtime = "edge";
 
 function calcAge(birthDate: string | null): string {
-  if (!birthDate) return "—";
+  if (!birthDate) return "";
   const diff = Date.now() - new Date(birthDate).getTime();
   return Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25)) + " años";
 }
@@ -23,13 +23,12 @@ export default async function PacientesPage({
 
   let query = supabase
     .from("patients")
-    .select("id, full_name, phone, email, birth_date, sex, city, created_at")
+    .select("id, name, phone, whatsapp, email, birth_date, address")
     .eq("clinic_id", DEMO_CLINIC_ID)
-    .eq("active", true)
-    .order("full_name");
+    .order("name");
 
   if (q) {
-    query = query.or(`full_name.ilike.%${q}%,phone.ilike.%${q}%,email.ilike.%${q}%`);
+    query = query.or(`name.ilike.%${q}%,phone.ilike.%${q}%,email.ilike.%${q}%`);
   }
 
   const { data: patients } = await query;
@@ -85,21 +84,20 @@ export default async function PacientesPage({
           />
         ) : (
           <div className="divide-y divide-gray-100">
-            {patients.map((p: Partial<Patient> & { id: string; full_name: string }) => (
+            {(patients as Patient[]).map((p) => (
               <Link
                 key={p.id}
                 href={`/pacientes/${p.id}`}
                 className="flex items-center gap-4 px-6 py-4 hover:bg-gray-50 transition-colors"
               >
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-semibold text-blue-700">
-                  {p.full_name.charAt(0).toUpperCase()}
+                  {p.name.charAt(0).toUpperCase()}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate font-medium text-gray-900">{p.full_name}</p>
+                  <p className="truncate font-medium text-gray-900">{p.name}</p>
                   <p className="truncate text-sm text-gray-500">
-                    {p.phone ?? p.email ?? "Sin contacto"}
+                    {p.phone ?? p.whatsapp ?? p.email ?? "Sin contacto"}
                     {p.birth_date ? ` · ${calcAge(p.birth_date)}` : ""}
-                    {p.city ? ` · ${p.city}` : ""}
                   </p>
                 </div>
                 <span className="text-gray-400">›</span>

@@ -14,7 +14,7 @@ export default function NuevaConsultaPage() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [patients, setPatients] = useState<{ id: string; full_name: string }[]>([]);
+  const [patients, setPatients] = useState<{ id: string; name: string }[]>([]);
 
   useEffect(() => {
     fetch("/api/pacientes/lista")
@@ -48,7 +48,7 @@ export default function NuevaConsultaPage() {
   }
 
   const now = new Date();
-  const defaultDate = now.toISOString().slice(0, 16);
+  const defaultStart = now.toISOString().slice(0, 16);
   const defaultEnd = new Date(now.getTime() + 60 * 60 * 1000).toISOString().slice(0, 16);
 
   return (
@@ -59,7 +59,7 @@ export default function NuevaConsultaPage() {
         </Link>
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Nueva Consulta</h1>
-          <p className="text-sm text-gray-500">Programa una nueva consulta</p>
+          <p className="text-sm text-gray-500">Programa una consulta</p>
         </div>
       </div>
 
@@ -72,11 +72,12 @@ export default function NuevaConsultaPage() {
             name="patient_id"
             required
             defaultValue={pacienteId ?? ""}
+            title="Paciente"
             className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
           >
             <option value="">— Seleccionar paciente —</option>
             {patients.map((p) => (
-              <option key={p.id} value={p.id}>{p.full_name}</option>
+              <option key={p.id} value={p.id}>{p.name}</option>
             ))}
           </select>
         </div>
@@ -88,23 +89,9 @@ export default function NuevaConsultaPage() {
           <input
             name="title"
             required
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
             placeholder="ej. Consulta inicial, Evaluación postoperatoria..."
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
-          <select
-            name="type"
             className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-          >
-            <option value="consultation">Consulta</option>
-            <option value="follow_up">Seguimiento</option>
-            <option value="surgery">Cirugía</option>
-            <option value="procedure">Procedimiento</option>
-            <option value="evaluation">Evaluación</option>
-          </select>
+          />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -113,10 +100,11 @@ export default function NuevaConsultaPage() {
               Inicio <span className="text-red-500">*</span>
             </label>
             <input
-              name="starts_at"
+              name="start_at"
               type="datetime-local"
               required
-              defaultValue={defaultDate}
+              defaultValue={defaultStart}
+              title="Fecha y hora de inicio"
               className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
             />
           </div>
@@ -125,10 +113,11 @@ export default function NuevaConsultaPage() {
               Fin <span className="text-red-500">*</span>
             </label>
             <input
-              name="ends_at"
+              name="end_at"
               type="datetime-local"
               required
               defaultValue={defaultEnd}
+              title="Fecha y hora de fin"
               className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
             />
           </div>
@@ -139,6 +128,7 @@ export default function NuevaConsultaPage() {
           <textarea
             name="notes"
             rows={3}
+            placeholder="Observaciones adicionales..."
             className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
           />
         </div>

@@ -7,7 +7,7 @@ export const runtime = "edge";
 export async function POST(req: NextRequest) {
   const body = await req.json();
 
-  if (!body.patient_id || !body.title || !body.starts_at || !body.ends_at) {
+  if (!body.patient_id || !body.title || !body.start_at || !body.end_at) {
     return NextResponse.json({ message: "Faltan campos obligatorios" }, { status: 400 });
   }
 
@@ -18,10 +18,9 @@ export async function POST(req: NextRequest) {
       clinic_id: DEMO_CLINIC_ID,
       patient_id: body.patient_id,
       title: body.title,
-      type: body.type ?? "consultation",
       status: "scheduled",
-      starts_at: body.starts_at,
-      ends_at: body.ends_at,
+      start_at: body.start_at,
+      end_at: body.end_at,
       notes: body.notes || null,
     })
     .select("id")

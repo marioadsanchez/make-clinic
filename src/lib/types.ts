@@ -1,26 +1,17 @@
+// Schema real do Supabase (schema da sessão anterior)
+
 export type Patient = {
   id: string;
   clinic_id: string;
-  full_name: string;
+  user_id: string | null;
+  name: string;
+  document: string | null;
   birth_date: string | null;
-  sex: "male" | "female" | "other" | null;
-  blood_type: string | null;
-  photo_url: string | null;
   phone: string | null;
+  whatsapp: string | null;
   email: string | null;
-  emergency_contact_name: string | null;
-  emergency_contact_phone: string | null;
   address: string | null;
-  city: string | null;
-  state: string | null;
-  country: string | null;
-  allergies: string[] | null;
-  chronic_conditions: string[] | null;
-  current_medications: string[] | null;
-  previous_surgeries: string[] | null;
   notes: string | null;
-  referral_source: string | null;
-  active: boolean;
   created_at: string;
   updated_at: string;
 };
@@ -31,56 +22,71 @@ export type Appointment = {
   patient_id: string;
   doctor_id: string | null;
   title: string;
-  type: "consultation" | "follow_up" | "surgery" | "procedure" | "evaluation";
-  status: "scheduled" | "confirmed" | "in_progress" | "completed" | "cancelled" | "no_show";
-  starts_at: string;
-  ends_at: string;
-  duration_minutes: number | null;
+  start_at: string;
+  end_at: string;
+  status: "scheduled" | "confirmed" | "completed" | "cancelled" | "no_show";
   notes: string | null;
+  google_event_id: string | null;
   created_at: string;
-  patients?: Pick<Patient, "id" | "full_name" | "phone">;
+  patients?: Pick<Patient, "id" | "name" | "phone">;
 };
 
 export type Proposal = {
   id: string;
   clinic_id: string;
   patient_id: string;
+  procedure_id: string | null;
+  template_id: string | null;
+  doctor_id: string | null;
   title: string;
   body: string;
-  status: "draft" | "sent" | "viewed" | "approved" | "signed" | "rejected" | "expired";
-  total_price: number | null;
-  discount: number | null;
-  final_price: number | null;
-  valid_until: string | null;
-  sent_at: string | null;
-  signed_at: string | null;
-  pdf_url: string | null;
-  public_token: string;
+  price: number | null;
   payment_status: string;
-  notes: string | null;
+  status: "draft" | "sent" | "viewed" | "approved" | "signed" | "rejected" | "expired";
+  sent_at: string | null;
+  viewed_at: string | null;
+  approved_at: string | null;
+  signed_at: string | null;
+  expires_at: string | null;
+  pdf_url: string | null;
   created_at: string;
-  patients?: Pick<Patient, "id" | "full_name">;
+  updated_at: string;
+  patients?: Pick<Patient, "id" | "name">;
 };
 
 export type Control = {
   id: string;
   clinic_id: string;
   patient_id: string;
-  title: string;
-  due_date: string | null;
-  status: "pending" | "scheduled" | "completed" | "cancelled";
+  type: string;
+  scheduled_at: string | null;
+  completed_at: string | null;
   notes: string | null;
   created_at: string;
-  patients?: Pick<Patient, "id" | "full_name">;
+  patients?: Pick<Patient, "id" | "name">;
 };
 
 export type Procedure = {
   id: string;
   clinic_id: string;
   name: string;
-  category: string | null;
   description: string | null;
-  default_price: number | null;
-  duration_minutes: number | null;
-  active: boolean;
+  base_price: number | null;
+  estimated_duration_minutes: number | null;
+  is_surgical: boolean;
+};
+
+export type Consultation = {
+  id: string;
+  clinic_id: string;
+  patient_id: string;
+  appointment_id: string | null;
+  doctor_id: string | null;
+  reason: string | null;
+  evaluation: string | null;
+  diagnosis: string | null;
+  conduct: string | null;
+  observations: string | null;
+  consulted_at: string;
+  created_at: string;
 };

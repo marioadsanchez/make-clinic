@@ -59,7 +59,7 @@ export default function NuevoPacientePage() {
               Nombre completo <span className="text-red-500">*</span>
             </label>
             <input
-              name="full_name"
+              name="name"
               required
               className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
               placeholder="Nombre Apellido"
@@ -72,34 +72,18 @@ export default function NuevoPacientePage() {
               <input
                 name="birth_date"
                 type="date"
+                title="Fecha de nacimiento"
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Sexo</label>
-              <select
-                name="sex"
+              <label className="block text-sm font-medium text-gray-700 mb-1">Documento / ID</label>
+              <input
+                name="document"
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-              >
-                <option value="">— Seleccionar —</option>
-                <option value="female">Femenino</option>
-                <option value="male">Masculino</option>
-                <option value="other">Otro</option>
-              </select>
+                placeholder="DNI, CURP, Pasaporte..."
+              />
             </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de sangre</label>
-            <select
-              name="blood_type"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-            >
-              <option value="unknown">Desconocido</option>
-              {["A+","A-","B+","B-","AB+","AB-","O+","O-"].map(t => (
-                <option key={t} value={t}>{t}</option>
-              ))}
-            </select>
           </div>
         </div>
 
@@ -118,29 +102,9 @@ export default function NuevoPacientePage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">WhatsApp</label>
               <input
-                name="email"
-                type="email"
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                placeholder="correo@ejemplo.com"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Contacto de emergencia</label>
-              <input
-                name="emergency_contact_name"
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                placeholder="Nombre"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Tel. emergencia</label>
-              <input
-                name="emergency_contact_phone"
+                name="whatsapp"
                 type="tel"
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
                 placeholder="+52 55 0000 0000"
@@ -148,87 +112,35 @@ export default function NuevoPacientePage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Ciudad</label>
-              <input
-                name="city"
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Estado</label>
-              <input
-                name="state"
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-              />
-            </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input
+              name="email"
+              type="email"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+              placeholder="correo@ejemplo.com"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
+            <input
+              name="address"
+              placeholder="Calle, número, colonia..."
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+            />
           </div>
         </div>
 
-        {/* Antecedentes */}
+        {/* Notas */}
         <div className="rounded-xl border border-gray-200 bg-white p-6 space-y-4">
-          <h2 className="font-semibold text-gray-900">Antecedentes</h2>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Alergias</label>
-            <input
-              name="allergies_text"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-              placeholder="Separar con comas: penicilina, látex..."
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Enfermedades crónicas</label>
-            <input
-              name="chronic_conditions_text"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-              placeholder="Separar con comas: diabetes, hipertensión..."
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Medicamentos actuales</label>
-            <input
-              name="current_medications_text"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-              placeholder="Separar con comas..."
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Cirugías previas</label>
-            <input
-              name="previous_surgeries_text"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-              placeholder="Separar con comas..."
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">¿Cómo nos conoció?</label>
-            <select
-              name="referral_source"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-            >
-              <option value="">— Seleccionar —</option>
-              <option value="instagram">Instagram</option>
-              <option value="facebook">Facebook</option>
-              <option value="referral">Recomendación</option>
-              <option value="google">Google</option>
-              <option value="other">Otro</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Notas adicionales</label>
-            <textarea
-              name="notes"
-              rows={3}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-            />
-          </div>
+          <h2 className="font-semibold text-gray-900">Observaciones</h2>
+          <textarea
+            name="notes"
+            rows={4}
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+            placeholder="Alergias, antecedentes, observaciones..."
+          />
         </div>
 
         {error && (

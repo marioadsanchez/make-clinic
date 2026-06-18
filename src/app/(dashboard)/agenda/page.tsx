@@ -7,29 +7,24 @@ import { Badge } from "@/components/ui/badge";
 
 export const runtime = "edge";
 
-const statusLabel: Record<string, { label: string; variant: "gray" | "blue" | "green" | "yellow" | "red" }> = {
-  scheduled: { label: "Programada", variant: "gray" },
-  confirmed: { label: "Confirmada", variant: "green" },
-  in_progress: { label: "En curso", variant: "blue" },
-  completed: { label: "Completada", variant: "green" },
-  cancelled: { label: "Cancelada", variant: "red" },
-  no_show: { label: "No asistió", variant: "red" },
+const statusConfig: Record<string, { label: string; variant: "gray" | "blue" | "green" | "yellow" | "red" }> = {
+  scheduled:  { label: "Programada",  variant: "gray" },
+  confirmed:  { label: "Confirmada",  variant: "green" },
+  completed:  { label: "Completada",  variant: "green" },
+  cancelled:  { label: "Cancelada",   variant: "red" },
+  no_show:    { label: "No asistió",  variant: "red" },
 };
 
-const typeLabel: Record<string, string> = {
-  consultation: "Consulta",
-  follow_up: "Seguimiento",
-  surgery: "Cirugía",
-  procedure: "Procedimiento",
-  evaluation: "Evaluación",
-};
+function formatTime(dt: string) {
+  return new Date(dt).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
+}
 
-function formatDateTime(dt: string) {
-  const d = new Date(dt);
-  return {
-    date: d.toLocaleDateString("es-MX", { weekday: "short", day: "numeric", month: "short" }),
-    time: d.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" }),
-  };
+function formatDate(d: string) {
+  return new Date(d).toLocaleDateString("es-MX", { day: "2-digit", month: "short", year: "numeric" });
+}
+
+function toParam(d: Date) {
+  return d.toISOString().slice(0, 10);
 }
 
 export default async function AgendaPage({
@@ -40,30 +35,24 @@ export default async function AgendaPage({
   const { fecha } = await searchParams;
   const supabase = createAdminClient();
 
-  const targetDate = fecha ? new Date(fecha) : new Date();
-  const start = new Date(targetDate);
-  start.setHours(0, 0, 0, 0);
-  const end = new Date(targetDate);
-  end.setHours(23, 59, 59, 999);
+  const targetDate = fecha ? new Date(fecha + "T12:00:00") : new Date();
+  const start = new Date(targetDate); start.setHours(0, 0, 0, 0);
+  const end = new Date(targetDate);   end.setHours(23, 59, 59, 999);
 
   const { data: appointments } = await supabase
     .from("appointments")
-    .select("id, title, type, status, starts_at, ends_at, notes, patients(id, full_name, phone)")
+    .select("id, title, status, start_at, end_at, notes, patients(id, name, phone)")
     .eq("clinic_id", DEMO_CLINIC_ID)
-    .gte("starts_at", start.toISOString())
-    .lte("starts_at", end.toISOString())
-    .order("starts_at");
+    .gte("start_at", start.toISOString())
+    .lte("start_at", end.toISOString())
+    .order("start_at");
 
   const dateLabel = targetDate.toLocaleDateString("es-MX", {
     weekday: "long", day: "numeric", month: "long", year: "numeric",
   });
 
-  const prev = new Date(targetDate);
-  prev.setDate(prev.getDate() - 1);
-  const next = new Date(targetDate);
-  next.setDate(next.getDate() + 1);
-
-  const toParam = (d: Date) => d.toISOString().slice(0, 10);
+  const prev = new Date(targetDate); prev.setDate(prev.getDate() - 1);
+  const next = new Date(targetDate); next.setDate(next.getDate() + 1);
 
   return (
     <div className="space-y-6">
@@ -72,23 +61,23 @@ export default async function AgendaPage({
           <h1 className="text-2xl font-bold text-gray-900">Agenda</h1>
           <p className="text-sm text-gray-500 capitalize">{dateLabel}</p>
         </div>
-        <Link
-          href="/agenda/nueva"
-          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-        >
+        <Link href="/agenda/nueva"
+          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
           + Nueva Consulta
         </Link>
       </div>
 
       {/* Navegación de fechas */}
       <div className="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3">
-        <Link href={`/agenda?fecha=${toParam(prev)}`} className="rounded-lg px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100">
+        <Link href={`/agenda?fecha=${toParam(prev)}`}
+          className="rounded-lg px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100">
           ← Anterior
         </Link>
         <Link href="/agenda" className="text-sm font-medium text-blue-600 hover:text-blue-700">
           Hoy
         </Link>
-        <Link href={`/agenda?fecha=${toParam(next)}`} className="rounded-lg px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100">
+        <Link href={`/agenda?fecha=${toParam(next)}`}
+          className="rounded-lg px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100">
           Siguiente →
         </Link>
       </div>
@@ -100,10 +89,8 @@ export default async function AgendaPage({
             title="Sin consultas"
             description="No hay consultas programadas para este día."
             action={
-              <Link
-                href="/agenda/nueva"
-                className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-              >
+              <Link href="/agenda/nueva"
+                className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
                 + Nueva Consulta
               </Link>
             }
@@ -111,29 +98,23 @@ export default async function AgendaPage({
         ) : (
           <div className="divide-y divide-gray-100">
             {appointments.map((apt) => {
-              const start = formatDateTime(apt.starts_at);
-              const end = formatDateTime(apt.ends_at);
-              const statusInfo = statusLabel[apt.status] ?? { label: apt.status, variant: "gray" as const };
-              const patient = apt.patients as { id: string; full_name: string; phone: string | null } | null;
+              const patient = apt.patients as { id: string; name: string; phone: string | null } | null;
+              const s = statusConfig[apt.status] ?? { label: apt.status, variant: "gray" as const };
               return (
                 <div key={apt.id} className="flex items-start gap-4 px-6 py-4">
                   <div className="w-20 shrink-0 text-right">
-                    <p className="text-sm font-semibold text-gray-900">{start.time}</p>
-                    <p className="text-xs text-gray-400">{end.time}</p>
+                    <p className="text-sm font-semibold text-gray-900">{formatTime(apt.start_at)}</p>
+                    <p className="text-xs text-gray-400">{formatTime(apt.end_at)}</p>
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2 flex-wrap">
+                    <div className="flex flex-wrap items-center gap-2">
                       <p className="font-medium text-gray-900">{apt.title}</p>
-                      <Badge label={typeLabel[apt.type] ?? apt.type} variant="blue" />
-                      <Badge label={statusInfo.label} variant={statusInfo.variant} />
+                      <Badge label={s.label} variant={s.variant} />
                     </div>
                     {patient && (
-                      <Link
-                        href={`/pacientes/${patient.id}`}
-                        className="mt-1 block text-sm text-blue-600 hover:underline"
-                      >
-                        {patient.full_name}
-                        {patient.phone ? ` · ${patient.phone}` : ""}
+                      <Link href={`/pacientes/${patient.id}`}
+                        className="mt-1 block text-sm text-blue-600 hover:underline">
+                        {patient.name}{patient.phone ? ` · ${patient.phone}` : ""}
                       </Link>
                     )}
                     {apt.notes && <p className="mt-1 text-sm text-gray-500">{apt.notes}</p>}
