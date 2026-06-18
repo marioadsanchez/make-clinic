@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Calendar, Users, FileText, Settings } from "lucide-react";
+import { LayoutDashboard, Calendar, Users, FileText, FolderOpen, Settings } from "lucide-react";
 
 const nav = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/agenda", label: "Agenda", icon: Calendar },
   { href: "/pacientes", label: "Pacientes", icon: Users },
   { href: "/propuestas", label: "Propuestas", icon: FileText },
+  { href: "/documentos", label: "Documentos", icon: FolderOpen },
   { href: "/configuracion", label: "Configuración", icon: Settings },
 ];
 
