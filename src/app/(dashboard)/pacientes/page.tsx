@@ -6,10 +6,10 @@ export default function PacientesPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Pacientes</h1>
-          <p className="text-sm text-gray-500">Gerencie os pacientes da clínica</p>
+          <p className="text-sm text-gray-500">Administra los pacientes de la clínica</p>
         </div>
         <button className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
-          + Novo Paciente
+          + Nuevo Paciente
         </button>
       </div>
       <div className="rounded-xl border border-gray-200 bg-white">
@@ -21,7 +21,7 @@ export default function PacientesPage() {
           />
         </div>
         <div className="p-6 text-center text-sm text-gray-500">
-          Nenhum paciente cadastrado.
+          Ningún paciente registrado.
         </div>
       </div>
     </div>

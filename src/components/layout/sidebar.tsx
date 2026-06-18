@@ -8,8 +8,8 @@ const nav = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/agenda", label: "Agenda", icon: Calendar },
   { href: "/pacientes", label: "Pacientes", icon: Users },
-  { href: "/propostas", label: "Propostas", icon: FileText },
-  { href: "/configuracoes", label: "Configurações", icon: Settings },
+  { href: "/propuestas", label: "Propuestas", icon: FileText },
+  { href: "/configuracion", label: "Configuración", icon: Settings },
 ];
 
 export function Sidebar({ clinicName }: { clinicName: string }) {

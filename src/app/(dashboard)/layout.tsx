@@ -8,7 +8,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <Sidebar clinicName="Make Clinic" />
       <div className="flex flex-1 flex-col overflow-hidden">
         <header className="flex h-16 shrink-0 items-center border-b border-gray-200 bg-white px-6">
-          <span className="text-sm text-gray-500">Demo — sem autenticação</span>
+          <span className="text-sm text-gray-500">Demo — sin autenticación</span>
         </header>
         <main className="flex-1 overflow-y-auto p-6">{children}</main>
       </div>
