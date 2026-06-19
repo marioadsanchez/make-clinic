@@ -44,7 +44,7 @@ export default function NuevaConsultaPage() {
   const now = new Date();
   const defaultStart = now.toISOString().slice(0, 16);
   const defaultEnd = new Date(now.getTime() + 60 * 60 * 1000).toISOString().slice(0, 16);
-  const field = "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none";
+  const field = "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none";
 
   return (
     <div className="mx-auto max-w-xl space-y-6">

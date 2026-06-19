@@ -43,7 +43,7 @@ export default function NuevoPacientePage() {
     }
   }
 
-  const field = "rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none w-full";
+  const field = "rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none w-full";
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
