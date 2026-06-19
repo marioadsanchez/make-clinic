@@ -24,7 +24,7 @@ export type Appointment = {
   title: string;
   start_at: string;
   end_at: string;
-  status: "scheduled" | "confirmed" | "completed" | "cancelled" | "no_show";
+  status: "scheduled" | "confirmed" | "completed" | "cancelled" | "rescheduled";
   notes: string | null;
   google_event_id: string | null;
   created_at: string;

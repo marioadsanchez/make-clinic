@@ -27,7 +27,7 @@ export default async function DashboardPage() {
       .eq("clinic_id", DEMO_CLINIC_ID)
       .gte("start_at", startOfDay.toISOString())
       .lte("start_at", endOfDay.toISOString())
-      .not("status", "in", '("cancelled","no_show")')
+      .not("status", "in", '("cancelled","rescheduled")')
       .order("start_at"),
     supabase.from("proposals").select("*", { count: "exact", head: true }).eq("clinic_id", DEMO_CLINIC_ID).in("status", ["draft", "sent", "viewed"]),
     supabase.from("controls").select("*", { count: "exact", head: true }).eq("clinic_id", DEMO_CLINIC_ID).is("completed_at", null),

@@ -8,11 +8,11 @@ import { Badge } from "@/components/ui/badge";
 export const runtime = "edge";
 
 const statusConfig: Record<string, { label: string; variant: "gray" | "blue" | "green" | "yellow" | "red" }> = {
-  scheduled:  { label: "Programada",  variant: "gray" },
-  confirmed:  { label: "Confirmada",  variant: "green" },
-  completed:  { label: "Completada",  variant: "green" },
-  cancelled:  { label: "Cancelada",   variant: "red" },
-  no_show:    { label: "No asistió",  variant: "red" },
+  scheduled:   { label: "Programada",    variant: "gray" },
+  confirmed:   { label: "Confirmada",    variant: "green" },
+  completed:   { label: "Completada",    variant: "green" },
+  cancelled:   { label: "Cancelada",     variant: "red" },
+  rescheduled: { label: "Reprogramada",  variant: "yellow" },
 };
 
 function formatTime(dt: string) {

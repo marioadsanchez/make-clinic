@@ -45,7 +45,7 @@ export default async function PacientePage({ params }: { params: Promise<{ id: s
   };
   const statusLabels: Record<string, string> = {
     draft: "Borrador", sent: "Enviada", viewed: "Vista", approved: "Aprobada",
-    signed: "Firmada", rejected: "Rechazada", scheduled: "Programada",
+    signed: "Firmada", rejected: "Rechazada", scheduled: "Programada", rescheduled: "Reprogramada",
     confirmed: "Confirmada", completed: "Completada", cancelled: "Cancelada",
   };
 
