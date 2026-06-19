@@ -10,17 +10,22 @@ export const runtime = "edge";
 const statusConfig: Record<string, { label: string; variant: "gray" | "blue" | "green" | "yellow" | "red" }> = {
   scheduled:   { label: "Programada",    variant: "gray" },
   confirmed:   { label: "Confirmada",    variant: "green" },
+  in_progress: { label: "En curso",      variant: "blue" },
   completed:   { label: "Completada",    variant: "green" },
   cancelled:   { label: "Cancelada",     variant: "red" },
-  rescheduled: { label: "Reprogramada",  variant: "yellow" },
+  no_show:     { label: "No asistió",    variant: "red" },
+};
+
+const typeLabels: Record<string, string> = {
+  consultation: "Consulta",
+  follow_up:    "Seguimiento",
+  surgery:      "Cirugía",
+  procedure:    "Procedimiento",
+  evaluation:   "Evaluación",
 };
 
 function formatTime(dt: string) {
   return new Date(dt).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
-}
-
-function formatDate(d: string) {
-  return new Date(d).toLocaleDateString("es-MX", { day: "2-digit", month: "short", year: "numeric" });
 }
 
 function toParam(d: Date) {
@@ -41,11 +46,11 @@ export default async function AgendaPage({
 
   const { data: appointments } = await supabase
     .from("appointments")
-    .select("id, title, status, start_at, end_at, notes, patients(id, name, phone)")
+    .select("id, title, type, status, starts_at, ends_at, notes, patients(id, full_name, phone)")
     .eq("clinic_id", DEMO_CLINIC_ID)
-    .gte("start_at", start.toISOString())
-    .lte("start_at", end.toISOString())
-    .order("start_at");
+    .gte("starts_at", start.toISOString())
+    .lte("starts_at", end.toISOString())
+    .order("starts_at");
 
   const dateLabel = targetDate.toLocaleDateString("es-MX", {
     weekday: "long", day: "numeric", month: "long", year: "numeric",
@@ -67,7 +72,6 @@ export default async function AgendaPage({
         </Link>
       </div>
 
-      {/* Navegación de fechas */}
       <div className="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3">
         <Link href={`/agenda?fecha=${toParam(prev)}`}
           className="rounded-lg px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100">
@@ -98,23 +102,26 @@ export default async function AgendaPage({
         ) : (
           <div className="divide-y divide-gray-100">
             {appointments.map((apt) => {
-              const patient = apt.patients as { id: string; name: string; phone: string | null } | null;
+              const patient = apt.patients as { id: string; full_name: string; phone: string | null } | null;
               const s = statusConfig[apt.status] ?? { label: apt.status, variant: "gray" as const };
               return (
                 <div key={apt.id} className="flex items-start gap-4 px-6 py-4">
                   <div className="w-20 shrink-0 text-right">
-                    <p className="text-sm font-semibold text-gray-900">{formatTime(apt.start_at)}</p>
-                    <p className="text-xs text-gray-400">{formatTime(apt.end_at)}</p>
+                    <p className="text-sm font-semibold text-gray-900">{formatTime(apt.starts_at)}</p>
+                    <p className="text-xs text-gray-400">{formatTime(apt.ends_at)}</p>
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <p className="font-medium text-gray-900">{apt.title}</p>
                       <Badge label={s.label} variant={s.variant} />
+                      {apt.type && apt.type !== "consultation" && (
+                        <span className="text-xs text-gray-400">{typeLabels[apt.type] ?? apt.type}</span>
+                      )}
                     </div>
                     {patient && (
                       <Link href={`/pacientes/${patient.id}`}
                         className="mt-1 block text-sm text-blue-600 hover:underline">
-                        {patient.name}{patient.phone ? ` · ${patient.phone}` : ""}
+                        {patient.full_name}{patient.phone ? ` · ${patient.phone}` : ""}
                       </Link>
                     )}
                     {apt.notes && <p className="mt-1 text-sm text-gray-500">{apt.notes}</p>}

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import type { Proposal, Patient } from "@/lib/types";
+import type { Proposal } from "@/lib/types";
 
 export const runtime = "edge";
 
@@ -35,14 +35,15 @@ export default async function PropuestaPage({ params }: { params: Promise<{ id: 
 
   const { data } = await supabase
     .from("proposals")
-    .select("*, patients(id, name, phone, whatsapp, email)")
+    .select("*, patients(id, full_name, phone, email)")
     .eq("id", id)
     .single();
 
   if (!data) notFound();
 
-  const p = data as Proposal & { patients: Patient | null };
+  const p = data as Proposal & { patients: { id: string; full_name: string; phone: string | null; email: string | null } | null };
   const cfg = statusConfig[p.status] ?? { label: p.status, variant: "gray" as const };
+  const price = p.final_price ?? p.total_price;
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
@@ -56,9 +57,8 @@ export default async function PropuestaPage({ params }: { params: Promise<{ id: 
             <Badge label={cfg.label} variant={cfg.variant} />
           </div>
           {p.patients && (
-            <Link href={`/pacientes/${p.patients.id}`}
-              className="text-sm text-blue-600 hover:underline">
-              {p.patients.name}
+            <Link href={`/pacientes/${p.patients.id}`} className="text-sm text-blue-600 hover:underline">
+              {p.patients.full_name}
             </Link>
           )}
         </div>
@@ -70,17 +70,23 @@ export default async function PropuestaPage({ params }: { params: Promise<{ id: 
           <div>
             <p className="text-xs font-medium uppercase tracking-wide text-gray-500">Precio</p>
             <p className="mt-1 text-2xl font-bold text-gray-900">
-              {p.price ? `$${p.price.toLocaleString("es-MX")}` : "—"}
+              {price ? `$${price.toLocaleString("es-MX")}` : "—"}
             </p>
           </div>
+          {p.discount ? (
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wide text-gray-500">Descuento</p>
+              <p className="mt-1 text-sm text-gray-900">${p.discount.toLocaleString("es-MX")}</p>
+            </div>
+          ) : null}
           <div>
             <p className="text-xs font-medium uppercase tracking-wide text-gray-500">Creada</p>
             <p className="mt-1 text-sm text-gray-900">{formatDate(p.created_at)}</p>
           </div>
-          {p.expires_at && (
+          {p.valid_until && (
             <div>
               <p className="text-xs font-medium uppercase tracking-wide text-gray-500">Válida hasta</p>
-              <p className="mt-1 text-sm text-gray-900">{formatDate(p.expires_at)}</p>
+              <p className="mt-1 text-sm text-gray-900">{formatDate(p.valid_until)}</p>
             </div>
           )}
           {p.sent_at && (
@@ -101,7 +107,7 @@ export default async function PropuestaPage({ params }: { params: Promise<{ id: 
       {/* Contenido */}
       <div className="rounded-xl border border-gray-200 bg-white p-6">
         <h2 className="mb-4 font-semibold text-gray-900">Detalle</h2>
-        <div className="whitespace-pre-wrap text-sm text-gray-700">{p.body}</div>
+        <div className="whitespace-pre-wrap text-sm text-gray-700 leading-relaxed">{p.body}</div>
       </div>
 
       {/* Contacto del paciente */}
@@ -115,11 +121,11 @@ export default async function PropuestaPage({ params }: { params: Promise<{ id: 
                 📞 {p.patients.phone}
               </a>
             )}
-            {p.patients.whatsapp && (
-              <a href={`https://wa.me/${p.patients.whatsapp.replace(/\D/g, "")}?text=Hola, te comparto la propuesta: ${p.title}`}
+            {p.patients.phone && (
+              <a href={`https://wa.me/${p.patients.phone.replace(/\D/g, "")}?text=${encodeURIComponent(`Hola, te comparto la propuesta: ${p.title}`)}`}
                 target="_blank" rel="noopener noreferrer"
                 className="rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-700 hover:bg-green-100">
-                💬 Enviar por WhatsApp
+                💬 WhatsApp
               </a>
             )}
             {p.patients.email && (

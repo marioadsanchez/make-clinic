@@ -14,7 +14,7 @@ export default function NuevaPropuestaPage() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [patients, setPatients] = useState<{ id: string; name: string }[]>([]);
+  const [patients, setPatients] = useState<{ id: string; full_name: string }[]>([]);
 
   useEffect(() => {
     fetch("/api/pacientes/lista").then((r) => r.json()).then(setPatients).catch(() => {});
@@ -26,17 +26,15 @@ export default function NuevaPropuestaPage() {
     setError(null);
 
     const form = new FormData(e.currentTarget);
-    const data = Object.fromEntries(form.entries());
-
     const res = await fetch("/api/propuestas", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+      body: JSON.stringify(Object.fromEntries(form.entries())),
     });
 
     if (!res.ok) {
       const err = await res.json();
-      setError(err.message ?? "Error al guardar");
+      setError(err.error ?? "Error al guardar");
       setLoading(false);
       return;
     }
@@ -45,90 +43,47 @@ export default function NuevaPropuestaPage() {
     router.push(`/propuestas/${prop.id}`);
   }
 
+  const field = "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none";
+
   return (
     <div className="mx-auto max-w-xl space-y-6">
       <div className="flex items-center gap-3">
-        <Link href="/propuestas" className="text-gray-400 hover:text-gray-600">
-          <ArrowLeft className="h-5 w-5" />
-        </Link>
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Nueva Propuesta</h1>
-          <p className="text-sm text-gray-500">Crea una propuesta comercial</p>
-        </div>
+        <Link href="/propuestas" className="text-gray-400 hover:text-gray-600"><ArrowLeft className="h-5 w-5" /></Link>
+        <h1 className="text-2xl font-bold text-gray-900">Nueva Propuesta</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4 rounded-xl border border-gray-200 bg-white p-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Paciente <span className="text-red-500">*</span>
-          </label>
-          <select
-            name="patient_id"
-            required
-            defaultValue={pacienteId ?? ""}
-            title="Paciente"
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-          >
+          <label htmlFor="patient_id" className="block text-sm font-medium text-gray-700 mb-1">Paciente *</label>
+          <select id="patient_id" name="patient_id" required defaultValue={pacienteId ?? ""} className={field}>
             <option value="">— Seleccionar paciente —</option>
-            {patients.map((p) => (
-              <option key={p.id} value={p.id}>{p.name}</option>
-            ))}
+            {patients.map((p) => <option key={p.id} value={p.id}>{p.full_name}</option>)}
           </select>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Título <span className="text-red-500">*</span>
-          </label>
-          <input
-            name="title"
-            required
-            placeholder="ej. Rinoplastia + Blefaroplastia"
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-          />
+          <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">Título *</label>
+          <input id="title" name="title" required placeholder="ej. Rinoplastia + Blefaroplastia" className={field} />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Descripción / Detalle <span className="text-red-500">*</span>
-          </label>
-          <textarea
-            name="body"
-            required
-            rows={6}
-            placeholder="Describe los procedimientos, condiciones, incluye y excluye..."
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-          />
+          <label htmlFor="body" className="block text-sm font-medium text-gray-700 mb-1">Descripción / Detalle *</label>
+          <textarea id="body" name="body" required rows={6}
+            placeholder="Describe los procedimientos, condiciones, qué incluye y excluye..." className={field} />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Precio (MXN)</label>
-            <input
-              name="price"
-              type="number"
-              step="0.01"
-              min="0"
-              placeholder="0.00"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-            />
+            <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">Precio</label>
+            <input id="price" name="price" type="number" step="0.01" min="0" placeholder="0.00" className={field} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Válida hasta</label>
-            <input
-              name="expires_at"
-              type="date"
-              title="Fecha de expiración"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-            />
+            <label htmlFor="expires_at" className="block text-sm font-medium text-gray-700 mb-1">Válida hasta</label>
+            <input id="expires_at" name="expires_at" type="date" className={field} />
           </div>
         </div>
 
-        {error && (
-          <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-            {error}
-          </div>
-        )}
+        {error && <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
 
         <div className="flex gap-3 pt-2">
           <Link href="/propuestas"

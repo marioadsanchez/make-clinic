@@ -7,8 +7,7 @@ import { Badge } from "@/components/ui/badge";
 
 export const runtime = "edge";
 
-function formatDate(d: string | null) {
-  if (!d) return "—";
+function formatDate(d: string) {
   return new Date(d).toLocaleDateString("es-MX", { day: "2-digit", month: "short", year: "numeric" });
 }
 
@@ -17,29 +16,25 @@ export default async function DocumentosPage() {
 
   const { data: documents } = await supabase
     .from("documents")
-    .select("id, name, sent_at, archived_at, created_at, patients(id, name)")
+    .select("id, title, created_at, pdf_url, patients(id, full_name)")
     .eq("clinic_id", DEMO_CLINIC_ID)
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .limit(50);
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Documentos</h1>
-          <p className="text-sm text-gray-500">Consentimientos y documentos clínicos</p>
-        </div>
+        <h1 className="text-2xl font-bold text-gray-900">Documentos</h1>
         <Link href="/documentos/nuevo"
           className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
-          + Nuevo Documento
+          + Nuevo
         </Link>
       </div>
 
       <div className="rounded-xl border border-gray-200 bg-white">
         {!documents?.length ? (
-          <EmptyState
-            icon={FolderOpen}
-            title="Sin documentos"
-            description="Crea consentimientos y documentos para tus pacientes."
+          <EmptyState icon={FolderOpen} title="Sin documentos"
+            description="Crea documentos clínicos y consentimientos."
             action={
               <Link href="/documentos/nuevo"
                 className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
@@ -49,28 +44,17 @@ export default async function DocumentosPage() {
           />
         ) : (
           <div className="divide-y divide-gray-100">
-            {documents.map((d) => {
-              const patient = d.patients as { id: string; name: string } | null;
-              const status = d.archived_at ? "archived" : d.sent_at ? "sent" : "draft";
-              const statusCfg = {
-                draft: { label: "Borrador", variant: "gray" as const },
-                sent: { label: "Enviado", variant: "blue" as const },
-                archived: { label: "Archivado", variant: "green" as const },
-              }[status];
-
+            {documents.map((doc) => {
+              const patient = doc.patients as { id: string; full_name: string } | null;
               return (
-                <Link key={d.id} href={`/documentos/${d.id}`}
-                  className="flex items-center gap-4 px-6 py-4 hover:bg-gray-50 transition-colors">
+                <Link key={doc.id} href={`/documentos/${doc.id}`}
+                  className="flex items-center gap-4 px-6 py-4 hover:bg-gray-50">
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <p className="font-medium text-gray-900">{d.name}</p>
-                      <Badge label={statusCfg.label} variant={statusCfg.variant} />
-                    </div>
-                    {patient && (
-                      <p className="mt-0.5 text-sm text-gray-500">{patient.name}</p>
-                    )}
-                    <p className="text-xs text-gray-400">{formatDate(d.created_at)}</p>
+                    <p className="font-medium text-gray-900">{doc.title}</p>
+                    {patient && <p className="text-sm text-gray-500">{patient.full_name}</p>}
+                    <p className="text-xs text-gray-400">{formatDate(doc.created_at)}</p>
                   </div>
+                  {doc.pdf_url && <Badge label="PDF" variant="blue" />}
                   <span className="text-gray-400">›</span>
                 </Link>
               );

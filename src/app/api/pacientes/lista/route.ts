@@ -8,9 +8,10 @@ export async function GET() {
   const supabase = createAdminClient();
   const { data } = await supabase
     .from("patients")
-    .select("id, name")
+    .select("id, full_name")
     .eq("clinic_id", DEMO_CLINIC_ID)
-    .order("name");
+    .eq("active", true)
+    .order("full_name");
 
   return NextResponse.json(data ?? []);
 }

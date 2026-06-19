@@ -14,13 +14,10 @@ export default function NuevaConsultaPage() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [patients, setPatients] = useState<{ id: string; name: string }[]>([]);
+  const [patients, setPatients] = useState<{ id: string; full_name: string }[]>([]);
 
   useEffect(() => {
-    fetch("/api/pacientes/lista")
-      .then((r) => r.json())
-      .then(setPatients)
-      .catch(() => {});
+    fetch("/api/pacientes/lista").then((r) => r.json()).then(setPatients).catch(() => {});
   }, []);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -29,129 +26,83 @@ export default function NuevaConsultaPage() {
     setError(null);
 
     const form = new FormData(e.currentTarget);
-    const data = Object.fromEntries(form.entries());
-
     const res = await fetch("/api/agenda", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+      body: JSON.stringify(Object.fromEntries(form.entries())),
     });
 
     if (!res.ok) {
       const err = await res.json();
-      setError(err.message ?? "Error al guardar");
+      setError(err.error ?? "Error al guardar");
       setLoading(false);
       return;
     }
-
     router.push("/agenda");
   }
 
   const now = new Date();
   const defaultStart = now.toISOString().slice(0, 16);
   const defaultEnd = new Date(now.getTime() + 60 * 60 * 1000).toISOString().slice(0, 16);
+  const field = "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none";
 
   return (
     <div className="mx-auto max-w-xl space-y-6">
       <div className="flex items-center gap-3">
-        <Link href="/agenda" className="text-gray-400 hover:text-gray-600">
-          <ArrowLeft className="h-5 w-5" />
-        </Link>
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Nueva Consulta</h1>
-          <p className="text-sm text-gray-500">Programa una consulta</p>
-        </div>
+        <Link href="/agenda" className="text-gray-400 hover:text-gray-600"><ArrowLeft className="h-5 w-5" /></Link>
+        <h1 className="text-2xl font-bold text-gray-900">Nueva Consulta</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4 rounded-xl border border-gray-200 bg-white p-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Paciente <span className="text-red-500">*</span>
-          </label>
-          <select
-            name="patient_id"
-            required
-            defaultValue={pacienteId ?? ""}
-            title="Paciente"
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-          >
+          <label htmlFor="patient_id" className="block text-sm font-medium text-gray-700 mb-1">Paciente *</label>
+          <select id="patient_id" name="patient_id" required defaultValue={pacienteId ?? ""} className={field}>
             <option value="">— Seleccionar paciente —</option>
-            {patients.map((p) => (
-              <option key={p.id} value={p.id}>{p.name}</option>
-            ))}
+            {patients.map((p) => <option key={p.id} value={p.id}>{p.full_name}</option>)}
           </select>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Título <span className="text-red-500">*</span>
-          </label>
-          <input
-            name="title"
-            required
-            placeholder="ej. Consulta inicial, Evaluación postoperatoria..."
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-          />
+          <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">Título *</label>
+          <input id="title" name="title" required placeholder="ej. Consulta inicial, Evaluación postoperatoria..." className={field} />
+        </div>
+
+        <div>
+          <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
+          <select id="type" name="type" className={field}>
+            <option value="consultation">Consulta</option>
+            <option value="follow_up">Seguimiento</option>
+            <option value="surgery">Cirugía</option>
+            <option value="procedure">Procedimiento</option>
+            <option value="evaluation">Evaluación</option>
+          </select>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Inicio <span className="text-red-500">*</span>
-            </label>
-            <input
-              name="start_at"
-              type="datetime-local"
-              required
-              defaultValue={defaultStart}
-              title="Fecha y hora de inicio"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-            />
+            <label htmlFor="starts_at" className="block text-sm font-medium text-gray-700 mb-1">Inicio *</label>
+            <input id="starts_at" name="starts_at" type="datetime-local" required defaultValue={defaultStart} className={field} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Fin <span className="text-red-500">*</span>
-            </label>
-            <input
-              name="end_at"
-              type="datetime-local"
-              required
-              defaultValue={defaultEnd}
-              title="Fecha y hora de fin"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-            />
+            <label htmlFor="ends_at" className="block text-sm font-medium text-gray-700 mb-1">Fin *</label>
+            <input id="ends_at" name="ends_at" type="datetime-local" required defaultValue={defaultEnd} className={field} />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Notas</label>
-          <textarea
-            name="notes"
-            rows={3}
-            placeholder="Observaciones adicionales..."
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-          />
+          <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-1">Notas</label>
+          <textarea id="notes" name="notes" rows={3} placeholder="Observaciones adicionales..." className={field} />
         </div>
 
-        {error && (
-          <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-            {error}
-          </div>
-        )}
+        {error && <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
 
         <div className="flex gap-3 pt-2">
-          <Link
-            href="/agenda"
-            className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-center text-sm font-medium text-gray-700 hover:bg-gray-50"
-          >
+          <Link href="/agenda" className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-center text-sm font-medium text-gray-700 hover:bg-gray-50">
             Cancelar
           </Link>
-          <button
-            type="submit"
-            disabled={loading}
-            className="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
-          >
-            {loading ? "Guardando..." : "Guardar Consulta"}
+          <button type="submit" disabled={loading}
+            className="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50">
+            {loading ? "Guardando..." : "Guardar"}
           </button>
         </div>
       </form>

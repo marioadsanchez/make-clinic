@@ -21,16 +21,20 @@ export default async function DashboardPage() {
     { count: pendingProposals },
     { count: pendingControls },
   ] = await Promise.all([
-    supabase.from("patients").select("*", { count: "exact", head: true }).eq("clinic_id", DEMO_CLINIC_ID),
+    supabase.from("patients").select("*", { count: "exact", head: true }).eq("clinic_id", DEMO_CLINIC_ID).eq("active", true),
     supabase.from("appointments")
-      .select("id, title, start_at, end_at, status, patients(id, name, phone)")
+      .select("id, title, starts_at, ends_at, status, patients(id, full_name, phone)")
       .eq("clinic_id", DEMO_CLINIC_ID)
-      .gte("start_at", startOfDay.toISOString())
-      .lte("start_at", endOfDay.toISOString())
-      .not("status", "in", '("cancelled","rescheduled")')
-      .order("start_at"),
-    supabase.from("proposals").select("*", { count: "exact", head: true }).eq("clinic_id", DEMO_CLINIC_ID).in("status", ["draft", "sent", "viewed"]),
-    supabase.from("controls").select("*", { count: "exact", head: true }).eq("clinic_id", DEMO_CLINIC_ID).is("completed_at", null),
+      .gte("starts_at", startOfDay.toISOString())
+      .lte("starts_at", endOfDay.toISOString())
+      .not("status", "in", "(cancelled,no_show)")
+      .order("starts_at"),
+    supabase.from("proposals").select("*", { count: "exact", head: true })
+      .eq("clinic_id", DEMO_CLINIC_ID)
+      .in("status", ["draft", "sent", "viewed"]),
+    supabase.from("controls").select("*", { count: "exact", head: true })
+      .eq("clinic_id", DEMO_CLINIC_ID)
+      .eq("status", "pending"),
   ]);
 
   const cards = [
@@ -82,12 +86,12 @@ export default async function DashboardPage() {
               todayAppointments.map((apt) => (
                 <div key={apt.id} className="flex items-center gap-4 px-6 py-3">
                   <div className="text-center">
-                    <p className="text-sm font-semibold text-gray-900">{formatTime(apt.start_at)}</p>
-                    <p className="text-xs text-gray-500">{formatTime(apt.end_at)}</p>
+                    <p className="text-sm font-semibold text-gray-900">{formatTime(apt.starts_at)}</p>
+                    <p className="text-xs text-gray-500">{formatTime(apt.ends_at)}</p>
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium text-gray-900">
-                      {(apt.patients as { name: string } | null)?.name ?? "—"}
+                      {(apt.patients as { full_name: string } | null)?.full_name ?? "—"}
                     </p>
                     <p className="truncate text-xs text-gray-500">{apt.title}</p>
                   </div>
@@ -115,7 +119,7 @@ export default async function DashboardPage() {
               </div>
               <span className="text-sm font-medium text-gray-700">Nueva Consulta</span>
             </Link>
-            <Link href="/propuestas" className="flex items-center gap-3 rounded-lg p-3 hover:bg-gray-50">
+            <Link href="/propuestas/nueva" className="flex items-center gap-3 rounded-lg p-3 hover:bg-gray-50">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-yellow-50">
                 <FileText className="h-4 w-4 text-yellow-600" />
               </div>
