@@ -25,7 +25,7 @@ export default async function DocumentosPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Documentos</h1>
-        <Link href="/documentos/nuevo"
+        <Link href="/documentos/novo"
           className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
           + Nuevo
         </Link>
@@ -36,7 +36,7 @@ export default async function DocumentosPage() {
           <EmptyState icon={FolderOpen} title="Sin documentos"
             description="Crea documentos clínicos y consentimientos."
             action={
-              <Link href="/documentos/nuevo"
+              <Link href="/documentos/novo"
                 className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
                 + Nuevo Documento
               </Link>

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Pencil } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { EnviarButton } from "@/components/propuesta/enviar-button";
 import type { Proposal } from "@/lib/types";
 
 export const runtime = "edge";
@@ -142,13 +143,22 @@ export default async function PropuestaPage({ params }: { params: Promise<{ id: 
         </div>
       )}
 
-      {/* Acciones */}
+      {/* Portal de firma */}
+      {p.status !== "signed" && p.status !== "rejected" && (
+        <EnviarButton
+          proposalId={id}
+          publicToken={p.public_token ?? null}
+          patientPhone={p.patients?.phone ?? null}
+        />
+      )}
+
+      {/* Acciones de estado */}
       <div className="flex flex-wrap gap-3">
         {nextStatus[p.status] && (
           <form action={`/api/propuestas/${id}/status`} method="POST" className="flex-1">
             <input type="hidden" name="status" value={nextStatus[p.status]} />
             <button type="submit"
-              className="w-full rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
+              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
               {nextStatusLabel[p.status]}
             </button>
           </form>

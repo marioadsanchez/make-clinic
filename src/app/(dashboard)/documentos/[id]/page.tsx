@@ -1,7 +1,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Pencil } from "lucide-react";
 
 export const runtime = "edge";
 
@@ -38,6 +38,10 @@ export default async function DocumentoPage({ params }: { params: Promise<{ id: 
             </Link>
           )}
         </div>
+        <Link href={`/documentos/${id}/editar`}
+          className="flex items-center gap-1.5 rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
+          <Pencil className="h-3.5 w-3.5" /> Editar
+        </Link>
       </div>
 
       <div className="rounded-xl border border-gray-200 bg-white p-6">
