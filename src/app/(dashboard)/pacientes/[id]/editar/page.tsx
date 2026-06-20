@@ -72,23 +72,23 @@ export default function EditarPacientePage({ params }: { params: Promise<{ id: s
     }
   }
 
-  const f = "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none";
-  const l = "mb-1 block text-sm font-medium text-gray-700";
+  const f = "field";
+  const l = "label";
 
-  if (loading) return <div className="flex h-64 items-center justify-center"><p className="text-sm text-gray-500">Cargando...</p></div>;
+  if (loading) return <div className="flex h-64 items-center justify-center"><p className="text-sm text-[#797588]">Cargando...</p></div>;
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div className="flex items-center gap-3">
-        <Link href={`/pacientes/${id}`} className="text-gray-400 hover:text-gray-600">
+        <Link href={`/pacientes/${id}`} className="text-[#797588] hover:text-[#484556]">
           <ArrowLeft className="h-5 w-5" />
         </Link>
-        <h1 className="text-2xl font-bold text-gray-900">Editar Paciente</h1>
+        <h1 className="text-2xl font-bold text-[#151c27]">Editar Paciente</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="rounded-xl border border-gray-200 bg-white p-6 space-y-4">
-          <h2 className="font-semibold text-gray-900">Datos personales</h2>
+        <div className="card card-p space-y-4">
+          <h2 className="font-semibold text-[#151c27]">Datos personales</h2>
           <div>
             <label className={l}>Nombre completo *</label>
             <input value={fullName} onChange={(e) => setFullName(e.target.value)} required className={f} />
@@ -120,8 +120,8 @@ export default function EditarPacientePage({ params }: { params: Promise<{ id: s
           </div>
         </div>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-6 space-y-4">
-          <h2 className="font-semibold text-gray-900">Dirección</h2>
+        <div className="card card-p space-y-4">
+          <h2 className="font-semibold text-[#151c27]">Dirección</h2>
           <div>
             <label className={l}>Dirección</label>
             <input value={address} onChange={(e) => setAddress(e.target.value)} className={f} />
@@ -138,8 +138,8 @@ export default function EditarPacientePage({ params }: { params: Promise<{ id: s
           </div>
         </div>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-6 space-y-4">
-          <h2 className="font-semibold text-gray-900">Contacto de emergencia</h2>
+        <div className="card card-p space-y-4">
+          <h2 className="font-semibold text-[#151c27]">Contacto de emergencia</h2>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className={l}>Nombre</label>
@@ -152,8 +152,8 @@ export default function EditarPacientePage({ params }: { params: Promise<{ id: s
           </div>
         </div>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-6 space-y-4">
-          <h2 className="font-semibold text-gray-900">Información adicional</h2>
+        <div className="card card-p space-y-4">
+          <h2 className="font-semibold text-[#151c27]">Información adicional</h2>
           <div>
             <label className={l}>Cómo nos conoció</label>
             <select value={referralSource} onChange={(e) => setReferralSource(e.target.value)} className={f}>
@@ -176,12 +176,10 @@ export default function EditarPacientePage({ params }: { params: Promise<{ id: s
         {error && <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{error}</p>}
 
         <div className="flex gap-3">
-          <Link href={`/pacientes/${id}`}
-            className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-center text-sm font-medium text-gray-700 hover:bg-gray-50">
+          <Link href={`/pacientes/${id}`} className="btn-secondary flex-1 text-center">
             Cancelar
           </Link>
-          <button type="submit" disabled={saving}
-            className="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50">
+          <button type="submit" disabled={saving} className="btn-primary flex-1 disabled:opacity-50">
             {saving ? "Guardando..." : "Guardar Cambios"}
           </button>
         </div>

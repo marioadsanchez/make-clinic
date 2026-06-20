@@ -44,18 +44,18 @@ export default function NuevaConsultaPage() {
   const now = new Date();
   const defaultStart = now.toISOString().slice(0, 16);
   const defaultEnd = new Date(now.getTime() + 60 * 60 * 1000).toISOString().slice(0, 16);
-  const field = "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none";
+  const field = "field";
 
   return (
     <div className="mx-auto max-w-xl space-y-6">
       <div className="flex items-center gap-3">
-        <Link href="/agenda" className="text-gray-400 hover:text-gray-600"><ArrowLeft className="h-5 w-5" /></Link>
-        <h1 className="text-2xl font-bold text-gray-900">Nueva Consulta</h1>
+        <Link href="/agenda" className="text-[#797588] hover:text-[#484556]"><ArrowLeft className="h-5 w-5" /></Link>
+        <h1 className="text-2xl font-bold text-[#151c27]">Nueva Consulta</h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4 rounded-xl border border-gray-200 bg-white p-6">
+      <form onSubmit={handleSubmit} className="card card-p space-y-4">
         <div>
-          <label htmlFor="patient_id" className="block text-sm font-medium text-gray-700 mb-1">Paciente *</label>
+          <label htmlFor="patient_id" className="label">Paciente *</label>
           <select id="patient_id" name="patient_id" required defaultValue={pacienteId ?? ""} className={field}>
             <option value="">— Seleccionar paciente —</option>
             {patients.map((p) => <option key={p.id} value={p.id}>{p.full_name}</option>)}
@@ -63,12 +63,12 @@ export default function NuevaConsultaPage() {
         </div>
 
         <div>
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">Título *</label>
+          <label htmlFor="title" className="label">Título *</label>
           <input id="title" name="title" required placeholder="ej. Consulta inicial, Evaluación postoperatoria..." className={field} />
         </div>
 
         <div>
-          <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
+          <label htmlFor="type" className="label">Tipo</label>
           <select id="type" name="type" className={field}>
             <option value="consultation">Consulta</option>
             <option value="follow_up">Seguimiento</option>
@@ -80,28 +80,27 @@ export default function NuevaConsultaPage() {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label htmlFor="starts_at" className="block text-sm font-medium text-gray-700 mb-1">Inicio *</label>
+            <label htmlFor="starts_at" className="label">Inicio *</label>
             <input id="starts_at" name="starts_at" type="datetime-local" required defaultValue={defaultStart} className={field} />
           </div>
           <div>
-            <label htmlFor="ends_at" className="block text-sm font-medium text-gray-700 mb-1">Fin *</label>
+            <label htmlFor="ends_at" className="label">Fin *</label>
             <input id="ends_at" name="ends_at" type="datetime-local" required defaultValue={defaultEnd} className={field} />
           </div>
         </div>
 
         <div>
-          <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-1">Notas</label>
+          <label htmlFor="notes" className="label">Notas</label>
           <textarea id="notes" name="notes" rows={3} placeholder="Observaciones adicionales..." className={field} />
         </div>
 
         {error && <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
 
         <div className="flex gap-3 pt-2">
-          <Link href="/agenda" className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-center text-sm font-medium text-gray-700 hover:bg-gray-50">
+          <Link href="/agenda" className="btn-secondary flex-1 text-center">
             Cancelar
           </Link>
-          <button type="submit" disabled={loading}
-            className="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50">
+          <button type="submit" disabled={loading} className="btn-primary flex-1 disabled:opacity-50">
             {loading ? "Guardando..." : "Guardar"}
           </button>
         </div>

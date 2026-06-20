@@ -42,19 +42,19 @@ export default function NuevoControlPage() {
     }
   }
 
-  const f = "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none";
-  const l = "mb-1 block text-sm font-medium text-gray-700";
+  const f = "field";
+  const l = "label";
 
   return (
     <div className="mx-auto max-w-xl space-y-6">
       <div className="flex items-center gap-3">
-        <Link href="/controles" className="text-gray-400 hover:text-gray-600">
+        <Link href="/controles" className="text-[#797588] hover:text-[#484556]">
           <ArrowLeft className="h-5 w-5" />
         </Link>
-        <h1 className="text-2xl font-bold text-gray-900">Nuevo Control</h1>
+        <h1 className="text-2xl font-bold text-[#151c27]">Nuevo Control</h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="rounded-xl border border-gray-200 bg-white p-6 space-y-4">
+      <form onSubmit={handleSubmit} className="card card-p space-y-4">
         <div>
           <label className={l}>Paciente *</label>
           <select name="patient_id" required className={f}>
@@ -83,12 +83,10 @@ export default function NuevoControlPage() {
         {error && <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{error}</p>}
 
         <div className="flex gap-3 pt-2">
-          <Link href="/controles"
-            className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-center text-sm font-medium text-gray-700 hover:bg-gray-50">
+          <Link href="/controles" className="btn-secondary flex-1 text-center">
             Cancelar
           </Link>
-          <button type="submit" disabled={saving}
-            className="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50">
+          <button type="submit" disabled={saving} className="btn-primary flex-1 disabled:opacity-50">
             {saving ? "Guardando..." : "Crear Control"}
           </button>
         </div>

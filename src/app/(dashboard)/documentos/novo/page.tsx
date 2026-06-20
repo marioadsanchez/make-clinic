@@ -148,25 +148,25 @@ export default function NuevoDocumentoPage() {
     }
   }
 
-  const f = "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none";
-  const l = "mb-1 block text-sm font-medium text-gray-700";
+  const f = "field";
+  const l = "label";
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div className="flex items-center gap-3">
-        <Link href="/documentos" className="text-gray-400 hover:text-gray-600">
+        <Link href="/documentos" className="text-[#797588] hover:text-[#484556]">
           <ArrowLeft className="h-5 w-5" />
         </Link>
-        <h1 className="text-2xl font-bold text-gray-900">Nuevo Documento</h1>
+        <h1 className="text-2xl font-bold text-[#151c27]">Nuevo Documento</h1>
       </div>
 
       {/* Templates */}
-      <div className="rounded-xl border border-gray-200 bg-white p-5">
-        <p className="mb-3 text-sm font-medium text-gray-700">Usar plantilla</p>
+      <div className="card p-5">
+        <p className="mb-3 text-sm font-medium text-[#484556]">Usar plantilla</p>
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           {TEMPLATES.map((tpl) => (
             <button key={tpl.id} type="button" onClick={() => applyTemplate(tpl)}
-              className="rounded-lg border border-gray-200 px-3 py-2.5 text-left text-sm text-gray-700 hover:border-blue-300 hover:bg-blue-50 transition-colors">
+              className="rounded-lg border border-[#e5e7eb] px-3 py-2.5 text-left text-sm text-[#484556] hover:border-[#5427e6] hover:bg-[#f0f3ff] transition-colors">
               {tpl.label}
             </button>
           ))}
@@ -174,7 +174,7 @@ export default function NuevoDocumentoPage() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="rounded-xl border border-gray-200 bg-white p-6 space-y-4">
+        <div className="card card-p space-y-4">
           <div>
             <label className={l}>Paciente *</label>
             <select value={patientId} onChange={(e) => setPatientId(e.target.value)} required className={f}>
@@ -201,12 +201,10 @@ export default function NuevoDocumentoPage() {
         {error && <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{error}</p>}
 
         <div className="flex gap-3">
-          <Link href="/documentos"
-            className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-center text-sm font-medium text-gray-700 hover:bg-gray-50">
+          <Link href="/documentos" className="btn-secondary flex-1 text-center">
             Cancelar
           </Link>
-          <button type="submit" disabled={saving}
-            className="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50">
+          <button type="submit" disabled={saving} className="btn-primary flex-1 disabled:opacity-50">
             {saving ? "Guardando..." : "Crear Documento"}
           </button>
         </div>

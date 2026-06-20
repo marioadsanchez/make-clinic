@@ -60,22 +60,22 @@ export default function EditarPropuestaPage({ params }: { params: Promise<{ id: 
   const discountNum = parseFloat(discount) || 0;
   const finalPrice = totalNum - discountNum;
 
-  const f = "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none";
-  const l = "mb-1 block text-sm font-medium text-gray-700";
+  const f = "field";
+  const l = "label";
 
-  if (loading) return <div className="flex h-64 items-center justify-center"><p className="text-sm text-gray-500">Cargando...</p></div>;
+  if (loading) return <div className="flex h-64 items-center justify-center"><p className="text-sm text-[#797588]">Cargando...</p></div>;
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div className="flex items-center gap-3">
-        <Link href={`/propuestas/${id}`} className="text-gray-400 hover:text-gray-600">
+        <Link href={`/propuestas/${id}`} className="text-[#797588] hover:text-[#484556]">
           <ArrowLeft className="h-5 w-5" />
         </Link>
-        <h1 className="text-2xl font-bold text-gray-900">Editar Propuesta</h1>
+        <h1 className="text-2xl font-bold text-[#151c27]">Editar Propuesta</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="rounded-xl border border-gray-200 bg-white p-6 space-y-4">
+        <div className="card card-p space-y-4">
           <div>
             <label className={l}>Título *</label>
             <input value={title} onChange={(e) => setTitle(e.target.value)} required className={f} />
@@ -87,8 +87,8 @@ export default function EditarPropuestaPage({ params }: { params: Promise<{ id: 
           </div>
         </div>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-6 space-y-4">
-          <h2 className="font-semibold text-gray-900">Precio</h2>
+        <div className="card card-p space-y-4">
+          <h2 className="font-semibold text-[#151c27]">Precio</h2>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className={l}>Precio total</label>
@@ -102,8 +102,8 @@ export default function EditarPropuestaPage({ params }: { params: Promise<{ id: 
             </div>
           </div>
           {totalNum > 0 && (
-            <div className="rounded-lg bg-blue-50 px-4 py-3">
-              <p className="text-sm text-blue-800">
+            <div className="rounded-lg bg-[#f0f3ff] px-4 py-3">
+              <p className="text-sm text-[#4500d8]">
                 Precio final: <span className="font-bold">${finalPrice.toLocaleString("es-MX")}</span>
               </p>
             </div>
@@ -119,7 +119,7 @@ export default function EditarPropuestaPage({ params }: { params: Promise<{ id: 
           </div>
         </div>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-6">
+        <div className="card card-p">
           <label className={l}>Notas internas</label>
           <textarea rows={2} value={notes} onChange={(e) => setNotes(e.target.value)}
             placeholder="Observaciones internas (no visibles para el paciente)..." className={f} />
@@ -128,12 +128,10 @@ export default function EditarPropuestaPage({ params }: { params: Promise<{ id: 
         {error && <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{error}</p>}
 
         <div className="flex gap-3">
-          <Link href={`/propuestas/${id}`}
-            className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-center text-sm font-medium text-gray-700 hover:bg-gray-50">
+          <Link href={`/propuestas/${id}`} className="btn-secondary flex-1 text-center">
             Cancelar
           </Link>
-          <button type="submit" disabled={saving}
-            className="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50">
+          <button type="submit" disabled={saving} className="btn-primary flex-1 disabled:opacity-50">
             {saving ? "Guardando..." : "Guardar Cambios"}
           </button>
         </div>

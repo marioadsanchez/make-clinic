@@ -1,16 +1,17 @@
 import Link from "next/link";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { DEMO_CLINIC_ID } from "@/lib/constants";
-import { Users } from "lucide-react";
-import { EmptyState } from "@/components/ui/empty-state";
+import { Users, Plus, Phone } from "lucide-react";
 
 export const runtime = "edge";
 
-function calcAge(birthDate: string | null): string {
-  if (!birthDate) return "";
-  const diff = Date.now() - new Date(birthDate).getTime();
-  return Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25)) + " años";
-}
+const avatarColors = [
+  "bg-[#f0f3ff] text-[#5427e6]",
+  "bg-[#dcfce7] text-[#16a34a]",
+  "bg-[#fef9c3] text-[#a16207]",
+  "bg-[#e7eefe] text-[#484556]",
+  "bg-[#ffdad6] text-[#93000a]",
+];
 
 export default async function PacientesPage({
   searchParams,
@@ -32,47 +33,54 @@ export default async function PacientesPage({
   const { data: patients } = await query.limit(50);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Pacientes</h1>
-        <Link href="/pacientes/nuevo"
-          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
-          + Nuevo
+        <div>
+          <h1 className="text-2xl font-semibold text-[#151c27]">Pacientes</h1>
+          <p className="text-sm text-[#797588]">{patients?.length ?? 0} pacientes activos</p>
+        </div>
+        <Link href="/pacientes/nuevo" className="btn-primary">
+          <Plus className="h-4 w-4" /> Nuevo
         </Link>
       </div>
 
-      <form method="GET" className="relative">
+      <form method="GET">
         <input name="q" defaultValue={q} placeholder="Buscar por nombre..."
-          className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm placeholder-gray-400 focus:border-blue-500 focus:outline-none" />
+          className="field" />
       </form>
 
-      <div className="rounded-xl border border-gray-200 bg-white">
+      <div className="card overflow-hidden">
         {!patients?.length ? (
-          <EmptyState icon={Users}
-            title={q ? "Sin resultados" : "Sin pacientes"}
-            description={q ? `No se encontró "${q}".` : "Registra el primer paciente."}
-            action={!q ? (
-              <Link href="/pacientes/nuevo"
-                className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
-                + Nuevo Paciente
+          <div className="flex flex-col items-center py-16 text-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#f0f3ff] mb-4">
+              <Users className="h-7 w-7 text-[#5427e6]" />
+            </div>
+            <h3 className="font-semibold text-[#151c27]">{q ? "Sin resultados" : "Sin pacientes"}</h3>
+            <p className="mt-1 text-sm text-[#797588]">{q ? `No se encontró "${q}".` : "Registra el primer paciente."}</p>
+            {!q && (
+              <Link href="/pacientes/nuevo" className="btn-primary mt-4">
+                <Plus className="h-4 w-4" /> Nuevo paciente
               </Link>
-            ) : undefined}
-          />
+            )}
+          </div>
         ) : (
-          <div className="divide-y divide-gray-100">
-            {patients.map((p) => (
+          <div className="divide-y divide-[#f0f3ff]">
+            {patients.map((p, i) => (
               <Link key={p.id} href={`/pacientes/${p.id}`}
-                className="flex items-center gap-4 px-6 py-4 hover:bg-gray-50">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-700">
+                className="flex items-center gap-4 px-6 py-4 hover:bg-[#f9f9ff] transition-colors">
+                <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${avatarColors[i % avatarColors.length]}`}>
                   {p.full_name.charAt(0).toUpperCase()}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="font-medium text-gray-900">{p.full_name}</p>
-                  <p className="text-sm text-gray-500">
-                    {[p.birth_date ? calcAge(p.birth_date) : null, p.phone, p.city].filter(Boolean).join(" · ")}
-                  </p>
+                  <p className="font-medium text-[#151c27] truncate">{p.full_name}</p>
+                  <p className="text-xs text-[#797588] truncate">{p.email ?? p.city ?? "—"}</p>
                 </div>
-                <span className="text-gray-400">›</span>
+                {p.phone && (
+                  <span className="hidden sm:flex items-center gap-1.5 text-xs text-[#484556]">
+                    <Phone className="h-3.5 w-3.5" />{p.phone}
+                  </span>
+                )}
+                <span className="text-[#c9c4d9]">›</span>
               </Link>
             ))}
           </div>

@@ -63,68 +63,66 @@ export default async function AgendaPage({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Agenda</h1>
-          <p className="text-sm text-gray-500 capitalize">{dateLabel}</p>
+          <h1 className="text-2xl font-bold text-[#151c27]">Agenda</h1>
+          <p className="text-sm text-[#797588] capitalize">{dateLabel}</p>
         </div>
-        <Link href="/agenda/nueva"
-          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
+        <Link href="/agenda/nueva" className="btn-primary">
           + Nueva Consulta
         </Link>
       </div>
 
-      <div className="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3">
+      <div className="card flex items-center justify-between px-4 py-3">
         <Link href={`/agenda?fecha=${toParam(prev)}`}
-          className="rounded-lg px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100">
+          className="rounded-lg px-3 py-1.5 text-sm text-[#484556] hover:bg-[#f9f9ff]">
           ← Anterior
         </Link>
-        <Link href="/agenda" className="text-sm font-medium text-blue-600 hover:text-blue-700">
+        <Link href="/agenda" className="text-sm font-medium text-[#5427e6] hover:text-[#4500d8]">
           Hoy
         </Link>
         <Link href={`/agenda?fecha=${toParam(next)}`}
-          className="rounded-lg px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100">
+          className="rounded-lg px-3 py-1.5 text-sm text-[#484556] hover:bg-[#f9f9ff]">
           Siguiente →
         </Link>
       </div>
 
-      <div className="rounded-xl border border-gray-200 bg-white">
+      <div className="card">
         {!appointments?.length ? (
           <EmptyState
             icon={Calendar}
             title="Sin consultas"
             description="No hay consultas programadas para este día."
             action={
-              <Link href="/agenda/nueva"
-                className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
+              <Link href="/agenda/nueva" className="btn-primary">
                 + Nueva Consulta
               </Link>
             }
           />
         ) : (
-          <div className="divide-y divide-gray-100">
+          <div className="divide-y divide-[#f0f3ff]">
             {appointments.map((apt) => {
               const patient = apt.patients as { id: string; full_name: string; phone: string | null } | null;
               const s = statusConfig[apt.status] ?? { label: apt.status, variant: "gray" as const };
               return (
                 <div key={apt.id} className="flex items-start gap-4 px-6 py-4">
                   <div className="w-20 shrink-0 text-right">
-                    <p className="text-sm font-semibold text-gray-900">{formatTime(apt.starts_at)}</p>
-                    <p className="text-xs text-gray-400">{formatTime(apt.ends_at)}</p>
+                    <p className="text-sm font-semibold text-[#151c27]">{formatTime(apt.starts_at)}</p>
+                    <p className="text-xs text-[#797588]">{formatTime(apt.ends_at)}</p>
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <p className="font-medium text-gray-900">{apt.title}</p>
+                      <p className="font-medium text-[#151c27]">{apt.title}</p>
                       <Badge label={s.label} variant={s.variant} />
                       {apt.type && apt.type !== "consultation" && (
-                        <span className="text-xs text-gray-400">{typeLabels[apt.type] ?? apt.type}</span>
+                        <span className="text-xs text-[#797588]">{typeLabels[apt.type] ?? apt.type}</span>
                       )}
                     </div>
                     {patient && (
                       <Link href={`/pacientes/${patient.id}`}
-                        className="mt-1 block text-sm text-blue-600 hover:underline">
+                        className="mt-1 block text-sm text-[#5427e6] hover:underline">
                         {patient.full_name}{patient.phone ? ` · ${patient.phone}` : ""}
                       </Link>
                     )}
-                    {apt.notes && <p className="mt-1 text-sm text-gray-500">{apt.notes}</p>}
+                    {apt.notes && <p className="mt-1 text-sm text-[#797588]">{apt.notes}</p>}
                   </div>
                 </div>
               );

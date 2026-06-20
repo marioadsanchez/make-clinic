@@ -43,33 +43,33 @@ export default function NuevoPacientePage() {
     }
   }
 
-  const field = "rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none w-full";
+  const field = "field";
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div className="flex items-center gap-3">
-        <Link href="/pacientes" className="text-gray-400 hover:text-gray-600">
+        <Link href="/pacientes" className="text-[#797588] hover:text-[#484556]">
           <ArrowLeft className="h-5 w-5" />
         </Link>
-        <h1 className="text-2xl font-bold text-gray-900">Nuevo Paciente</h1>
+        <h1 className="text-2xl font-bold text-[#151c27]">Nuevo Paciente</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="rounded-xl border border-gray-200 bg-white p-6 space-y-4">
-          <h2 className="font-semibold text-gray-900">Datos Personales</h2>
+        <div className="card card-p space-y-4">
+          <h2 className="font-semibold text-[#151c27]">Datos Personales</h2>
 
           <div>
-            <label htmlFor="full_name" className="mb-1 block text-sm font-medium text-gray-700">Nombre completo *</label>
+            <label htmlFor="full_name" className="label">Nombre completo *</label>
             <input id="full_name" name="full_name" required placeholder="Ej. María García López" className={field} />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="birth_date" className="mb-1 block text-sm font-medium text-gray-700">Fecha de nacimiento</label>
+              <label htmlFor="birth_date" className="label">Fecha de nacimiento</label>
               <input id="birth_date" name="birth_date" type="date" title="Fecha de nacimiento" className={field} />
             </div>
             <div>
-              <label htmlFor="sex" className="mb-1 block text-sm font-medium text-gray-700">Sexo</label>
+              <label htmlFor="sex" className="label">Sexo</label>
               <select id="sex" name="sex" title="Sexo" className={field}>
                 <option value="">— Seleccionar —</option>
                 <option value="female">Femenino</option>
@@ -80,31 +80,31 @@ export default function NuevoPacientePage() {
           </div>
         </div>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-6 space-y-4">
-          <h2 className="font-semibold text-gray-900">Contacto</h2>
+        <div className="card card-p space-y-4">
+          <h2 className="font-semibold text-[#151c27]">Contacto</h2>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="phone" className="mb-1 block text-sm font-medium text-gray-700">Teléfono</label>
+              <label htmlFor="phone" className="label">Teléfono</label>
               <input id="phone" name="phone" type="tel" placeholder="+52 55 1234 5678" className={field} />
             </div>
             <div>
-              <label htmlFor="email" className="mb-1 block text-sm font-medium text-gray-700">Email</label>
+              <label htmlFor="email" className="label">Email</label>
               <input id="email" name="email" type="email" placeholder="correo@ejemplo.com" className={field} />
             </div>
           </div>
 
           <div>
-            <label htmlFor="city" className="mb-1 block text-sm font-medium text-gray-700">Ciudad</label>
+            <label htmlFor="city" className="label">Ciudad</label>
             <input id="city" name="city" placeholder="Ej. Ciudad de México" className={field} />
           </div>
         </div>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-6 space-y-4">
-          <h2 className="font-semibold text-gray-900">Otros</h2>
+        <div className="card card-p space-y-4">
+          <h2 className="font-semibold text-[#151c27]">Otros</h2>
 
           <div>
-            <label htmlFor="referral_source" className="mb-1 block text-sm font-medium text-gray-700">¿Cómo nos conoció?</label>
+            <label htmlFor="referral_source" className="label">¿Cómo nos conoció?</label>
             <select id="referral_source" name="referral_source" title="Fuente de referido" className={field}>
               <option value="">— Seleccionar —</option>
               <option value="instagram">Instagram</option>
@@ -116,7 +116,7 @@ export default function NuevoPacientePage() {
           </div>
 
           <div>
-            <label htmlFor="notes" className="mb-1 block text-sm font-medium text-gray-700">Notas internas</label>
+            <label htmlFor="notes" className="label">Notas internas</label>
             <textarea id="notes" name="notes" rows={3} placeholder="Observaciones internas..." className={field} />
           </div>
         </div>
@@ -124,12 +124,10 @@ export default function NuevoPacientePage() {
         {error && <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{error}</p>}
 
         <div className="flex gap-3">
-          <Link href="/pacientes"
-            className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-center text-sm font-medium text-gray-700 hover:bg-gray-50">
+          <Link href="/pacientes" className="btn-secondary flex-1 text-center">
             Cancelar
           </Link>
-          <button type="submit" disabled={loading}
-            className="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50">
+          <button type="submit" disabled={loading} className="btn-primary flex-1 disabled:opacity-50">
             {loading ? "Guardando..." : "Crear Paciente"}
           </button>
         </div>

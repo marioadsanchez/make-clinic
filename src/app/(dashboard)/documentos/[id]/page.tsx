@@ -27,26 +27,25 @@ export default async function DocumentoPage({ params }: { params: Promise<{ id: 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div className="flex items-center gap-3">
-        <Link href="/documentos" className="text-gray-400 hover:text-gray-600">
+        <Link href="/documentos" className="text-[#797588] hover:text-[#484556]">
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <div className="flex-1">
-          <h1 className="text-xl font-bold text-gray-900">{data.title}</h1>
+          <h1 className="text-xl font-bold text-[#151c27]">{data.title}</h1>
           {patient && (
-            <Link href={`/pacientes/${patient.id}`} className="text-sm text-blue-600 hover:underline">
+            <Link href={`/pacientes/${patient.id}`} className="text-sm text-[#5427e6] hover:underline">
               {patient.full_name}
             </Link>
           )}
         </div>
-        <Link href={`/documentos/${id}/editar`}
-          className="flex items-center gap-1.5 rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
+        <Link href={`/documentos/${id}/editar`} className="btn-secondary flex items-center gap-1.5">
           <Pencil className="h-3.5 w-3.5" /> Editar
         </Link>
       </div>
 
-      <div className="rounded-xl border border-gray-200 bg-white p-6">
-        <p className="text-xs text-gray-400 mb-4">Creado el {formatDate(data.created_at)}</p>
-        <div className="whitespace-pre-wrap text-sm text-gray-700 leading-relaxed">{data.body}</div>
+      <div className="card card-p">
+        <p className="text-xs text-[#797588] mb-4">Creado el {formatDate(data.created_at)}</p>
+        <div className="whitespace-pre-wrap text-sm text-[#484556] leading-relaxed">{data.body}</div>
       </div>
 
       {patient?.phone && (
@@ -59,7 +58,7 @@ export default async function DocumentoPage({ params }: { params: Promise<{ id: 
 
       {data.pdf_url && (
         <a href={data.pdf_url} target="_blank" rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 py-3 text-sm font-medium text-blue-700 hover:bg-blue-100">
+          className="flex items-center justify-center gap-2 rounded-xl border border-[#5427e6] bg-[#f0f3ff] py-3 text-sm font-medium text-[#5427e6] hover:bg-[#e8eeff]">
           📄 Ver PDF
         </a>
       )}

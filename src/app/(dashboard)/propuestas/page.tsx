@@ -39,9 +39,8 @@ export default async function PropuestasPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Propuestas</h1>
-        <Link href="/propuestas/nueva"
-          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
+        <h1 className="text-2xl font-bold text-[#151c27]">Propuestas</h1>
+        <Link href="/propuestas/nueva" className="btn-primary">
           + Nueva
         </Link>
       </div>
@@ -50,8 +49,7 @@ export default async function PropuestasPage() {
         <EmptyState icon={FileText} title="Sin propuestas"
           description="Crea tu primera propuesta comercial."
           action={
-            <Link href="/propuestas/nueva"
-              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
+            <Link href="/propuestas/nueva" className="btn-primary">
               + Nueva Propuesta
             </Link>
           }
@@ -62,7 +60,7 @@ export default async function PropuestasPage() {
             <div key={col.key} className="w-72 shrink-0">
               <div className="mb-3 flex items-center gap-2">
                 <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${col.color}`}>{col.label}</span>
-                <span className="text-xs text-gray-400">{col.items.length}</span>
+                <span className="text-xs text-[#797588]">{col.items.length}</span>
               </div>
               <div className="space-y-2">
                 {col.items.map((p) => {
@@ -70,23 +68,23 @@ export default async function PropuestasPage() {
                   const price = p.final_price ?? p.total_price;
                   return (
                     <Link key={p.id} href={`/propuestas/${p.id}`}
-                      className="block rounded-xl border border-gray-200 bg-white p-4 hover:shadow-sm transition-shadow">
-                      <p className="font-medium text-gray-900 text-sm leading-tight">{p.title}</p>
+                      className="card block p-4 hover:shadow-sm transition-shadow">
+                      <p className="font-medium text-[#151c27] text-sm leading-tight">{p.title}</p>
                       {patient && (
-                        <p className="mt-1 text-xs text-gray-500">{patient.full_name}</p>
+                        <p className="mt-1 text-xs text-[#797588]">{patient.full_name}</p>
                       )}
                       <div className="mt-2 flex items-center justify-between">
                         {price ? (
-                          <p className="text-sm font-semibold text-gray-900">${price.toLocaleString("es-MX")}</p>
+                          <p className="text-sm font-semibold text-[#151c27]">${price.toLocaleString("es-MX")}</p>
                         ) : <span />}
-                        <p className="text-xs text-gray-400">{formatDate(p.created_at)}</p>
+                        <p className="text-xs text-[#797588]">{formatDate(p.created_at)}</p>
                       </div>
                     </Link>
                   );
                 })}
                 {col.items.length === 0 && (
-                  <div className="rounded-xl border border-dashed border-gray-200 px-4 py-6 text-center">
-                    <p className="text-xs text-gray-400">Sin propuestas</p>
+                  <div className="rounded-xl border border-dashed border-[#e5e7eb] px-4 py-6 text-center">
+                    <p className="text-xs text-[#797588]">Sin propuestas</p>
                   </div>
                 )}
               </div>
