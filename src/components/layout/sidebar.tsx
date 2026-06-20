@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Calendar, Users, FileText, FolderOpen, Settings } from "lucide-react";
+import { LayoutDashboard, Calendar, Users, FileText, FolderOpen, ClipboardCheck, Settings } from "lucide-react";
 
 const nav = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -10,6 +10,7 @@ const nav = [
   { href: "/pacientes", label: "Pacientes", icon: Users },
   { href: "/propuestas", label: "Propuestas", icon: FileText },
   { href: "/documentos", label: "Documentos", icon: FolderOpen },
+  { href: "/controles", label: "Controles", icon: ClipboardCheck },
   { href: "/configuracion", label: "Configuración", icon: Settings },
 ];
 
